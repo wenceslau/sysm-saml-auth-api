@@ -1,0 +1,5 @@
+saml:
+  issuer-uri: ${saml.issuer-uri}
+  client-redirect: ${saml.client-redirect}
+  public-cert: ${saml.public-cert}
+  public-key: ${saml.public-key}

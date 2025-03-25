@@ -1,4 +1,7 @@
 ############## Files properties to ignore
+application-dev.yaml
+application-prd.yaml
+application-test.yaml
 application-dev.properties
 application-prd.properties
 application-test.properties
