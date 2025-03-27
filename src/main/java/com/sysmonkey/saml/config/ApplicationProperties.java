@@ -9,7 +9,8 @@ public class ApplicationProperties implements InitializingBean {
     private static final Logger log = Logger.getLogger(ApplicationProperties.class.getName());
 
     private String issuerUri;
-    private String clientRedirect;
+    private String redirectSaml;
+    private String redirectOnelogin;
     private String publicCert;
     private String publicKey;
 
@@ -21,12 +22,20 @@ public class ApplicationProperties implements InitializingBean {
         this.issuerUri = issuerUri;
     }
 
-    public String getClientRedirect() {
-        return clientRedirect;
+    public String getRedirectSaml() {
+        return redirectSaml;
     }
 
-    public void setClientRedirect(String clientRedirect) {
-        this.clientRedirect = clientRedirect;
+    public void setRedirectSaml(String redirectSaml) {
+        this.redirectSaml = redirectSaml;
+    }
+
+    public String getRedirectOnelogin() {
+        return redirectOnelogin;
+    }
+
+    public void setRedirectOnelogin(String redirectOnelogin) {
+        this.redirectOnelogin = redirectOnelogin;
     }
 
     public String getPublicCert() {
@@ -54,7 +63,7 @@ public class ApplicationProperties implements InitializingBean {
     public String toString() {
         return "ApplicationProperties{" +
                "issuerUri='" + issuerUri + '\'' +
-               ", clientRedirect='" + clientRedirect + '\'' +
+               ", clientRedirect='" + redirectSaml + '\'' +
                ", publicCert='" + publicCert + '\'' +
                ", publicKey='" + publicKey + '\'' +
                '}';

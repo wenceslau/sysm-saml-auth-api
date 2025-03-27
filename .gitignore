@@ -5,6 +5,7 @@ application-test.yaml
 application-dev.properties
 application-prd.properties
 application-test.properties
+onelogin.properties
 
 ############## Externsions to ignore
 *.class

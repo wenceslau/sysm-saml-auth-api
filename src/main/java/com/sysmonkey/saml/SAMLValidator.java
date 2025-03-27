@@ -63,7 +63,7 @@ public class SAMLValidator {
             return new String(decodedBytes, StandardCharsets.UTF_8);
 
         } catch (Exception e) {
-            throw new RuntimeException("Error decoding SAML response", e);
+            throw new SecurityException("Error decoding SAML response", e);
         }
     }
 
@@ -81,14 +81,14 @@ public class SAMLValidator {
             Unmarshaller unmarshaller = unmarshallerFactory.getUnmarshaller(element);
 
             if (unmarshaller == null) {
-                throw new RuntimeException("No Unmarshaller found for element: " + element.getNodeName());
+                throw new SecurityException("No Unmarshaller found for element: " + element.getNodeName());
             }
 
             XMLObject xmlObject = unmarshaller.unmarshall(element);
             return (Response) xmlObject;
 
         } catch (Exception e) {
-            throw new RuntimeException("Error parsing SAML response", e);
+            throw new SecurityException("Error parsing SAML response", e);
         }
     }
 
@@ -96,7 +96,7 @@ public class SAMLValidator {
         if (response.getAssertions() != null && !response.getAssertions().isEmpty()) {
             return response.getAssertions().get(0);
         }
-        throw new RuntimeException("No SAML assertion found in the response");
+        throw new SecurityException("No SAML assertion found in the response");
     }
 
     public void validateSignature(Assertion assertion) {
@@ -104,7 +104,7 @@ public class SAMLValidator {
         try {
             Signature signature = assertion.getSignature();
             if (signature == null) {
-                throw new RuntimeException("SAML assertion does not contain a signature");
+                throw new SecurityException("SAML assertion does not contain a signature");
             }
 
             X509Certificate certificate = buildX509FromCertificate();
@@ -113,7 +113,7 @@ public class SAMLValidator {
             SignatureValidator.validate(signature, credential);
 
         } catch (Exception e) {
-            throw new RuntimeException("Error validating SAML assertion signature: " + e.getMessage(), e);
+            throw new SecurityException("Error validating SAML assertion signature: " + e.getMessage(), e);
         }
 
     }
@@ -167,7 +167,7 @@ public class SAMLValidator {
     }
 
     public String redirectURL() {
-        return appProperties.getClientRedirect();
+        return appProperties.getRedirectSaml();
     }
 
     // Private helper methods
@@ -180,8 +180,8 @@ public class SAMLValidator {
                                        "-----END CERTIFICATE-----";
             return X509Support.decodeCertificate(publicKeyPEM);
 
-        } catch (CertificateException e) {
-            throw new CertificateException("Error creating X509Certificate from Public Key: " + e.getMessage(), e);
+        } catch (Exception e) {
+            throw new SecurityException("Error creating X509Certificate from Public Key: " + e.getMessage(), e);
         }
     }
 
@@ -197,7 +197,7 @@ public class SAMLValidator {
             return (X509Certificate) certificateFactory.generateCertificate(certificateInputStream);
 
         } catch (Exception e) {
-            throw new Exception("Error creating X509Certificate from certificate: " + e.getMessage(), e);
+            throw new SecurityException("Error creating X509Certificate from certificate: " + e.getMessage(), e);
         }
     }
 

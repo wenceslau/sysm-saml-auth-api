@@ -20,9 +20,11 @@ public class SAMLController {
 
     private final Logger log = Logger.getLogger(SAMLController.class.getName());
     private final SAMLValidator samlValidator;
+    private final SAMLOneLogin samlOneLogin;
 
-    public SAMLController(SAMLValidator samlValidator) {
+    public SAMLController(SAMLValidator samlValidator, SAMLOneLogin samlOneLogin) {
         this.samlValidator = samlValidator;
+        this.samlOneLogin = samlOneLogin;
     }
 
     @PostMapping("/acs")
@@ -55,5 +57,29 @@ public class SAMLController {
                     .body("Error validating SAML assertion: " + e.getMessage());
         }
     }
+
+    @PostMapping("/acs-onelogin")
+    public ResponseEntity<String> validade(HttpServletRequest httpRequest, HttpServletResponse httpResponse) {
+        log.info("Received SAML oneLogin assertion");
+        try {
+
+            samlOneLogin.validate(httpRequest, httpResponse);
+
+            log.info("SAML assertion valid for user");
+
+            httpResponse.sendRedirect(samlOneLogin.redirectURL());
+
+            // Optionally, create a user session or token here
+            return ResponseEntity
+                    .noContent()
+                    .build();
+
+        } catch (Exception e) {
+            return ResponseEntity
+                    .status(500)
+                    .body("Error validating SAML assertion: " + e.getMessage());
+        }
+    }
+
 
 }

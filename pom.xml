@@ -26,6 +26,8 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
+
+        <!-- Dependencies to parse and validade assertion XML SAML -->
         <dependency>
             <groupId>org.opensaml</groupId>
             <artifactId>opensaml-core</artifactId>
@@ -42,6 +44,26 @@
             <version>4.0.1</version>
         </dependency>
 
+        <!-- Dependencies to parse assertion XML SAML for Onelogin -->
+        <dependency>
+            <groupId>com.onelogin</groupId>
+            <artifactId>java-saml</artifactId>
+            <version>2.9.0</version>
+        </dependency>
+
+        <!-- Dependencies to wrapper jakarta HttpServlet ro javax HttpServlet  -->
+        <dependency>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.apache.felix.http.wrappers</artifactId>
+            <version>1.1.6</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>4.0.1</version>
+            <scope>provided</scope>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -54,20 +76,24 @@
             </plugin>
         </plugins>
     </build>
-
-<!--    <repositories>-->
-<!--        <repository>-->
-<!--            <id>shibboleth</id>-->
-<!--            <url>https://build.shibboleth.net/maven/releases/</url>-->
-<!--        </repository>-->
-<!--        <repository>-->
-<!--            <id>spring</id>-->
-<!--            <url>https://repo.spring.io/milestone</url>-->
-<!--        </repository>-->
-<!--        <repository>-->
-<!--            <id>maven-central</id>-->
-<!--            <url>https://repo.maven.apache.org/maven2</url>-->
-<!--        </repository>-->
-<!--    </repositories>-->
+    <repositories>
+        <repository>
+            <id>maven_central</id>
+            <name>Maven Central</name>
+            <url>https://repo.maven.apache.org/maven2/</url>
+        </repository>
+        <!--        <repository>-->
+        <!--            <id>shibboleth</id>-->
+        <!--            <url>https://build.shibboleth.net/maven/releases/</url>-->
+        <!--        </repository>-->
+        <!--        <repository>-->
+        <!--            <id>spring</id>-->
+        <!--            <url>https://repo.spring.io/milestone</url>-->
+        <!--        </repository>-->
+        <!--        <repository>-->
+        <!--            <id>maven-central</id>-->
+        <!--            <url>https://repo.maven.apache.org/maven2</url>-->
+        <!--        </repository>-->
+    </repositories>
 
 </project>
