@@ -131,12 +131,12 @@ public class SAMLValidator {
             ✅ User Attributes → Must contain required fields (email, roles, etc.).
          */
 
-        String expectedIssuer = appProperties.getIssuerUri();
+        String expectedIssuer = appProperties.getIdpIssuerUri();
         if (!expectedIssuer.equals(assertion.getIssuer().getValue())) {
             throw new SecurityException("Invalid SAML Issuer!");
         }
 
-        String expectedAudience = "sysm-saml-auth-ui";
+        String expectedAudience = appProperties.getSpEntityId();
         List<Audience> audiences = assertion.getConditions().getAudienceRestrictions().get(0).getAudiences();
         boolean audienceValid = audiences.stream().anyMatch(a -> expectedAudience.equals(a.getURI()));
         if (!audienceValid) {
@@ -166,15 +166,11 @@ public class SAMLValidator {
         }
     }
 
-    public String redirectURL() {
-        return appProperties.getRedirectSaml();
-    }
-
     // Private helper methods
 
     private X509Certificate buildX509FromPublicKey() throws CertificateException {
         try {
-            String publicKeyString = appProperties.getPublicKey();
+            String publicKeyString = appProperties.getIdpPublicKey();
             String publicKeyPEM = "-----BEGIN CERTIFICATE-----\n" +
                                        publicKeyString +"\n" +
                                        "-----END CERTIFICATE-----";
@@ -188,7 +184,7 @@ public class SAMLValidator {
     public X509Certificate buildX509FromCertificate() throws Exception {
 
         try {
-            String certificateString = appProperties.getPublicCert();
+            String certificateString = appProperties.getIdpPublicCert();
             CertificateFactory certificateFactory = CertificateFactory.getInstance("X.509");
             InputStream certificateInputStream;
 

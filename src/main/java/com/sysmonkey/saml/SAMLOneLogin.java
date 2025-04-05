@@ -1,7 +1,7 @@
 package com.sysmonkey.saml;
 
 import com.onelogin.saml2.Auth;
-import com.onelogin.saml2.servlet.ServletUtils;
+import com.onelogin.saml2.authn.AuthnRequestParams;
 import com.sysmonkey.saml.config.ApplicationProperties;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -10,20 +10,28 @@ import org.apache.felix.http.javaxwrappers.HttpServletResponseWrapper;
 import org.springframework.stereotype.Service;
 
 
-import java.io.IOException;
-import java.util.List;
-import java.util.Map;
-
 @Service
 public class SAMLOneLogin {
 
-    private final ApplicationProperties appProperties;
 
-    public SAMLOneLogin(ApplicationProperties appProperties) {
-        this.appProperties = appProperties;
+    public void authRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+        HttpServletRequestWrapper requestWrapper = new HttpServletRequestWrapper(request);
+        HttpServletResponseWrapper responseWrapper = new HttpServletResponseWrapper(response);
+
+        // Create the Auth object
+        Auth auth = new Auth("onelogin.properties", requestWrapper, responseWrapper);
+
+        // Create the parameters for the AuthnRequest. Although the keycloak does not support forceAuthn
+        var authnRequestParams = new AuthnRequestParams(true,false,false);
+
+        // Redirect the user to the SSO URL with ForceAuthn
+        String redirectUrl  = auth.login(null, authnRequestParams, true);
+
+        responseWrapper.sendRedirect(redirectUrl);
     }
 
-    public void validate(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public void authResponse(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         HttpServletRequestWrapper requestWrapper = new HttpServletRequestWrapper(request);
         HttpServletResponseWrapper responseWrapper = new HttpServletResponseWrapper(response);
@@ -39,7 +47,4 @@ public class SAMLOneLogin {
 
     }
 
-    public String redirectURL() {
-        return appProperties.getRedirectOnelogin();
-    }
 }

@@ -1,7 +1,9 @@
 saml:
-  issuer-uri: ${saml-issuer-uri}
-  public-cert: ${saml-public-cert}
-  public-key: ${saml-public-key}
-  redirect-saml: ${redirect-saml}
-  redirect-onelogin: ${redirect-onelogin}
+  idp-issuer-uri: ${saml-idp-issuer-uri}
+  idp-public-cert: ${saml-idp-public-cert}
+  idp-public-key: ${saml-idp-public-key}
+  sp-entity-id: ${saml-sp-entity-id}
+  sp-redirect-callback: ${saml-sp-redirect-callback}
+  sp-redirect-logout: ${saml-sp-redirect-logout}
+
 

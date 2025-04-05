@@ -8,64 +8,74 @@ public class ApplicationProperties implements InitializingBean {
 
     private static final Logger log = Logger.getLogger(ApplicationProperties.class.getName());
 
-    private String issuerUri;
-    private String redirectSaml;
-    private String redirectOnelogin;
-    private String publicCert;
-    private String publicKey;
+    private String idpIssuerUri;
+    private String idpPublicCert;
+    private String idpPublicKey;
 
-    public String getIssuerUri() {
-        return issuerUri;
+    private String spEntityId;
+    private String spRedirectCallback;
+    private String spRedirectLogout;
+
+    public String getIdpIssuerUri() {
+        return idpIssuerUri;
     }
 
-    public void setIssuerUri(String issuerUri) {
-        this.issuerUri = issuerUri;
+    public void setIdpIssuerUri(String idpIssuerUri) {
+        this.idpIssuerUri = idpIssuerUri;
     }
 
-    public String getRedirectSaml() {
-        return redirectSaml;
+    public String getIdpPublicCert() {
+        return idpPublicCert;
     }
 
-    public void setRedirectSaml(String redirectSaml) {
-        this.redirectSaml = redirectSaml;
+    public void setIdpPublicCert(String idpPublicCert) {
+        this.idpPublicCert = idpPublicCert;
     }
 
-    public String getRedirectOnelogin() {
-        return redirectOnelogin;
+    public String getIdpPublicKey() {
+        return idpPublicKey;
     }
 
-    public void setRedirectOnelogin(String redirectOnelogin) {
-        this.redirectOnelogin = redirectOnelogin;
+    public void setIdpPublicKey(String idpPublicKey) {
+        this.idpPublicKey = idpPublicKey;
     }
 
-    public String getPublicCert() {
-        return publicCert;
+    public String getSpEntityId() {
+        return spEntityId;
     }
 
-    public void setPublicCert(String publicCert) {
-        this.publicCert = publicCert;
+    public void setSpEntityId(String spEntityId) {
+        this.spEntityId = spEntityId;
     }
 
-    public String getPublicKey() {
-        return publicKey;
+    public String getSpRedirectCallback() {
+        return spRedirectCallback;
     }
 
-    public void setPublicKey(String publicKey) {
-        this.publicKey = publicKey;
+    public void setSpRedirectCallback(String spRedirectCallback) {
+        this.spRedirectCallback = spRedirectCallback;
+    }
+
+    public String getSpRedirectLogout() {
+        return spRedirectLogout;
+    }
+
+    public void setSpRedirectLogout(String spRedirectLogout) {
+        this.spRedirectLogout = spRedirectLogout;
     }
 
     @Override
-    public void afterPropertiesSet() throws Exception {
+    public void afterPropertiesSet() {
         log.info(toString());
     }
 
     @Override
     public String toString() {
         return "ApplicationProperties{" +
-               "issuerUri='" + issuerUri + '\'' +
-               ", clientRedirect='" + redirectSaml + '\'' +
-               ", publicCert='" + publicCert + '\'' +
-               ", publicKey='" + publicKey + '\'' +
+               "idpIssuerUri='" + idpIssuerUri + '\'' +
+               ", spEntityId='" + spEntityId + '\'' +
+               ", spRedirectCallback='" + spRedirectCallback + '\'' +
+               ", spRedirectLogout='" + spRedirectLogout + '\'' +
                '}';
     }
 }
