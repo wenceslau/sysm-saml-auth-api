@@ -31,7 +31,7 @@ public class SAMLOneLogin {
         responseWrapper.sendRedirect(redirectUrl);
     }
 
-    public void authResponse(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public String authResponse(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         HttpServletRequestWrapper requestWrapper = new HttpServletRequestWrapper(request);
         HttpServletResponseWrapper responseWrapper = new HttpServletResponseWrapper(response);
@@ -44,6 +44,8 @@ public class SAMLOneLogin {
             var causes = String.join(", ", errors);
             throw new SecurityException("User not authenticated. Errors: " + causes);
         }
+
+        return auth.getNameId();
 
     }
 

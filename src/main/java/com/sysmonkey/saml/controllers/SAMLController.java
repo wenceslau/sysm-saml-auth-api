@@ -3,13 +3,17 @@ package com.sysmonkey.saml.controllers;
 import com.sysmonkey.saml.SAMLOneLogin;
 import com.sysmonkey.saml.SAMLValidator;
 import com.sysmonkey.saml.config.ApplicationProperties;
+import com.sysmonkey.saml.config.JwtTokenConfig;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.opensaml.saml.saml2.core.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -22,11 +26,16 @@ public class SAMLController {
     private final ApplicationProperties appProperties;
     private final SAMLValidator samlValidator;
     private final SAMLOneLogin samlOneLogin;
+    private final JwtTokenConfig jwtTokenConfig;
 
-    public SAMLController(ApplicationProperties appProperties, SAMLValidator samlValidator, SAMLOneLogin samlOneLogin) {
+    public SAMLController(ApplicationProperties appProperties,
+                          SAMLValidator samlValidator,
+                          SAMLOneLogin samlOneLogin,
+                          JwtTokenConfig jwtTokenConfig) {
         this.appProperties = appProperties;
         this.samlValidator = samlValidator;
         this.samlOneLogin = samlOneLogin;
+        this.jwtTokenConfig = jwtTokenConfig;
     }
 
     @GetMapping("/auth-onelogin")
@@ -62,11 +71,12 @@ public class SAMLController {
                         .build();
             }
 
-            samlOneLogin.authResponse(httpRequest, httpResponse);
+            String username = samlOneLogin.authResponse(httpRequest, httpResponse);
 
             log.info("SAML assertion validated for user on ACS-OneLogin");
 
-            httpResponse.sendRedirect(appProperties.getSpRedirectCallback() + "#source=ACSOneLogin&access_token=1234567890");
+            var urlFragment = buildUrlFragment(username, "ACS-OneLogin");
+            httpResponse.sendRedirect(appProperties.getSpRedirectCallback() + urlFragment);
 
             // Optionally, create a user session or token here
             return ResponseEntity
@@ -102,7 +112,10 @@ public class SAMLController {
 
             samlValidator.validateContent(assertion);
 
-            httpResponse.sendRedirect(appProperties.getSpRedirectCallback() + "#source=ACSValidate&access_token=1234567890");
+            log.info("SAML assertion validated for user on ACS-Validate");
+
+            var urlFragment = buildUrlFragment(assertion.getSubject().getNameID().getValue(), "ACS-Validate");
+            httpResponse.sendRedirect(appProperties.getSpRedirectCallback() + urlFragment);
 
             log.info("SAML assertion validated for user on ACS-Validate");
 
@@ -121,13 +134,33 @@ public class SAMLController {
         log.log(Level.SEVERE, message, e);
         message += ": " + e.getMessage();
 
-        try {
-            httpResponse.sendRedirect(appProperties.getSpRedirectLogout() + "#error=" + message);
-        } catch (IOException ignored) {
-        }
         return ResponseEntity
                 .status(500)
                 .body(message);
+    }
+
+    private String buildUrlFragment(String username, String source) {
+
+        String access_token = jwtTokenConfig.generateToken(username, List.of(""));
+        String state = "";
+        String nonce = "";
+        String session_state = "";
+        String id_token = RandomStringUtils.insecure().nextAlphanumeric(32);
+        String token_type = "Bearer";
+        String expires_in = "";
+
+        String url = "";
+
+        url += "#source=" + source;
+        url += "&access_token=" + access_token;
+        url += "&state=" + state;
+        url += "&nonce=" + nonce;
+        url += "&session_state=" + session_state;
+        url += "&id_token=" + id_token;
+        url += "&token_type=" + token_type;
+        url += "&expires_in=" + expires_in;
+
+        return url;
     }
 
 }
